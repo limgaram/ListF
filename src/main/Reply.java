@@ -1,5 +1,5 @@
 package main;
-
+//데이터 구조화 클래스 - DTO, VO
 public class Reply {
 	private int id;
 	private int parentId;

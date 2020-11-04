@@ -10,13 +10,9 @@ public class ArticleDao {
 
 	public ArticleDao() {
 		articles = new ArrayList<>();
-		Article a1 = new Article(1, "첫번째", "내용1", "익명", getCurrentDate());
-		Article a2 = new Article(2, "두번째", "내용2", "익명", getCurrentDate());
-		Article a3 = new Article(3, "세번째", "내용3", "익명", getCurrentDate());
-
-		articles.add(a1);
-		articles.add(a2);
-		articles.add(a3);
+		Article a1 = new Article(1, "안녕하세요", "내용1", 1, Util.getCurrentDate());
+		Article a2 = new Article(2, "반갑습니다.", "내용2", 2, Util.getCurrentDate());
+		Article a3 = new Article(3, "안녕", "내용3", 3, Util.getCurrentDate());
 
 		articles.add(a1);
 		articles.add(a2);
@@ -26,7 +22,7 @@ public class ArticleDao {
 	public void insertArticle(Article a) {
 		a.setId(no);
 		no++;
-		a.setRegDate(getCurrentDate());
+		a.setRegDate(Util.getCurrentDate());
 
 		articles.add(a);
 	}
@@ -35,13 +31,7 @@ public class ArticleDao {
 		articles.remove(a);
 	}
 
-	private static String getCurrentDate() {
-		SimpleDateFormat format1 = new SimpleDateFormat("yyyy.MM.dd");
-		Date time = new Date();
-		String time1 = format1.format(time);
 
-		return time1;
-	}
 
 	public ArrayList<Article> getSearchedArticlesByFlag(int flag, String keyword) {
 

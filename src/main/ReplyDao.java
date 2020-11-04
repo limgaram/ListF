@@ -16,20 +16,13 @@ public class ReplyDao {
 	public void insertReply(Reply a) {
 		a.setId(no);
 		no++;
-		a.setRegDate(getCurrentDate());
+		a.setRegDate(Util.getCurrentDate());
 
 		replies.add(a);
 	}
 
 
 
-	private static String getCurrentDate() {
-		SimpleDateFormat format1 = new SimpleDateFormat("yyyy.MM.dd");
-		Date time = new Date();
-		String time1 = format1.format(time);
-
-		return time1;
-	}
 
 
 	public ArrayList<Reply> getReplies() {

@@ -1,6 +1,7 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 public class App {
@@ -209,15 +210,6 @@ public class App {
 				}
 			}
 
-			if (cmd.equals("article sort")) {
-
-				System.out.println("정렬 대상을 선택해주세요. : (id : 번호) ");
-				int readCmd = Integer.parseInt(sc.nextLine());
-
-				System.out.println("정렬 방법을 선택해주세요. (asc : 오름차순, desc : 내림차순) :");
-				String method = sc.nextLine();
-			}
-
 			if (cmd.equals("article search")) {
 				System.out.println("검색 항목을 (1. 제목, 2. 내용, 3. 제목 + 내용, 4. 작성자) : ");
 				int flag = sc.nextInt();
@@ -228,6 +220,28 @@ public class App {
 				searchedArticles = articleDao.getSearchedArticlesByFlag(flag, keyword);
 
 				printArticles(searchedArticles);
+			}
+
+			if (cmd.equals("article sort")) {
+
+				System.out.println("정렬 대상을 선택해주세요. : (like : 좋아요, hit : 조회수)");
+				String readCmd = sc.nextLine();
+
+				if (readCmd.equals("like")) {
+
+				} else if (readCmd.equals("hit")) {
+					// 조회수로 오름차순.
+					System.out.println("정렬 방법을 선택해주세요. (asc : 오름차순, desc : 내림차순) :");
+					String sortOrder = sc.nextLine();
+					
+					MyComparator comp = new MyComparator();
+					comp.sortOrder = sortOrder;
+					
+
+					
+
+				}
+
 			}
 
 			if (cmd.equals("member logout")) {
@@ -303,5 +317,26 @@ public class App {
 		}
 
 		return true;
+	}
+
+}
+
+class MyComparator implements Comparator<Article> {
+	
+	String sortOrder = "asc";
+
+	public int compare(Article o1, Article o2) {
+		if (sortOrder.equals("asc")) {
+			if (o1.getHit() > o2.getHit()) {
+				return 1;
+			}
+			return -1;
+
+		} else {
+			if (o1.getHit() < o2.getHit()) {
+				return 1;
+			}
+			return -1;
+		}
 	}
 }

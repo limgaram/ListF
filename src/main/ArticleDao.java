@@ -10,9 +10,9 @@ public class ArticleDao {
 
 	public ArticleDao() {
 		articles = new ArrayList<>();
-		Article a1 = new Article(1, "안녕하세요", "내용1", 1, Util.getCurrentDate());
-		Article a2 = new Article(2, "반갑습니다.", "내용2", 2, Util.getCurrentDate());
-		Article a3 = new Article(3, "안녕", "내용3", 3, Util.getCurrentDate());
+		Article a1 = new Article(1, "안녕하세요", "내용1", 1, Util.getCurrentDate() , 100);
+		Article a2 = new Article(2, "반갑습니다.", "내용2", 2, Util.getCurrentDate(), 20);
+		Article a3 = new Article(3, "안녕", "내용3", 3, Util.getCurrentDate(), 17);
 
 		articles.add(a1);
 		articles.add(a2);
@@ -67,7 +67,7 @@ public class ArticleDao {
 
 	public ArrayList<Article> getSearchedArticlesByBody(String keyword) {
 		ArrayList<Article> searchedArticles = new ArrayList<>();
-
+		
 		for (int i = 0; i < articles.size(); i++) {
 			Article article = articles.get(i);
 			String str = article.getBody(); // 각 게시물 제목

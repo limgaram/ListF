@@ -13,10 +13,14 @@ public class MemberDao {
 		Member m1 = new Member(1, "aaa", "aa1", "a", getCurrentDate());
 		Member m2 = new Member(2, "bbb", "bb1", "b", getCurrentDate());
 		Member m3 = new Member(3, "ccc", "cc1", "c", getCurrentDate());
+		Member m4 = new Member(4, "ddd", "dd1", "d", getCurrentDate());
+		Member m5 = new Member(5, "eee", "ee1", "e", getCurrentDate());
 
 		members.add(m1);
 		members.add(m2);
 		members.add(m3);
+		members.add(m4);
+		members.add(m5);
 	}
 
 	public void insertMember(Member m) {

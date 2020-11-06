@@ -6,17 +6,22 @@ import java.util.ArrayList;
 
 public class ArticleDao {
 	private ArrayList<Article> articles;
-	private int no = 4;
+	private int no = 6;
 
 	public ArticleDao() {
 		articles = new ArrayList<>();
-		Article a1 = new Article(1, "안녕하세요", "내용1", 1, Util.getCurrentDate() , 100);
-		Article a2 = new Article(2, "반갑습니다.", "내용2", 2, Util.getCurrentDate(), 20);
-		Article a3 = new Article(3, "안녕", "내용3", 3, Util.getCurrentDate(), 17);
+		
+		Article a1 = new Article(1, "안녕하세요", "내용1", 1, Util.getCurrentDate() , 100 , 20);
+		Article a2 = new Article(2, "반갑습니다.", "내용2", 2, Util.getCurrentDate(), 20, 17);
+		Article a3 = new Article(3, "안녕", "내용3", 3, Util.getCurrentDate(), 17, 31);
+		Article a4 = new Article(4, "이름", "내용4", 4, Util.getCurrentDate(), 90, 100);
+		Article a5 = new Article(5, "아니", "내용5", 5, Util.getCurrentDate(), 70, 50);
 
 		articles.add(a1);
 		articles.add(a2);
 		articles.add(a3);
+		articles.add(a4);
+		articles.add(a5);
 	}
 
 	public void insertArticle(Article a) {

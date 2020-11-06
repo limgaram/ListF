@@ -2,6 +2,7 @@ package main;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class App {
@@ -174,11 +175,13 @@ public class App {
 							if (rst == null) {
 								Like like = new Like(target.getId(), loginedMember.getId());
 								likeDao.insertLike(like);
+								target.setLikeCnt(target.getLikeCnt() + 1);
 								System.out.println("좋아요를 체크했습니다. ");
 							} else {
 								// 해제 - 삭제
 								likeDao.removeLike(rst);
 								System.out.println("좋아요를 해제했습니다. ");
+								target.setLikeCnt(target.getLikeCnt() - 1);
 							}
 
 						} else if (readCmd == 3) {
@@ -224,23 +227,18 @@ public class App {
 
 			if (cmd.equals("article sort")) {
 
-				System.out.println("정렬 대상을 선택해주세요. : (like : 좋아요, hit : 조회수)");
-				String readCmd = sc.nextLine();
+				System.out.println("정렬 대상을 선택해주세요. (like : 좋아요,  hit : 조회수) :");
+				String sortType = sc.nextLine();
+				System.out.println("정렬 방법을 선택해주세요. (asc : 오름차순,  desc : 내림차순) :");
+				String sortOrder = sc.nextLine();
 
-				if (readCmd.equals("like")) {
-
-				} else if (readCmd.equals("hit")) {
-					// 조회수로 오름차순.
-					System.out.println("정렬 방법을 선택해주세요. (asc : 오름차순, desc : 내림차순) :");
-					String sortOrder = sc.nextLine();
-					
-					MyComparator comp = new MyComparator();
-					comp.sortOrder = sortOrder;
-					
-
-					
-
-				}
+				MyComparator comp = new MyComparator();
+				comp.sortOrder = sortOrder;
+				comp.sortType = sortType;
+				// 조회수로 오름차순
+				ArrayList<Article> articles = articleDao.getArticles();
+				Collections.sort(articles, comp);
+				printArticles(articles);
 
 			}
 
@@ -250,6 +248,65 @@ public class App {
 				}
 				loginedMember = null;
 				System.out.println("logout");
+
+			}
+
+			if (cmd.equals("article page")) {
+				// article 출력.
+				ArrayList<Article> articles = articleDao.getArticles();
+				printArticles(articles);
+				//System.out.println("[1] 2 3 4 5 >>");
+
+				// 한 페이지에 3개씩 나오게 하기.
+				
+				int currentPageNo = Integer.parseInt(sc.nextLine());
+				
+				int totalCntOfItems = 20; //전체 게시물 개수
+				int startPageNo =1; //시작 페이지 번호
+				int itemCntPerPage = 3; // 페이지당 출력 게시물 개수
+				int pageCntPerBlock = 5; // 한 페이지 블럭 당 페이지 개수
+				int endPageNo = (int)Math.ceil((double)totalCntOfItems / itemCntPerPage); // 마지막 페이지 번호
+				int currentPageBlock = (int)Math.ceil((double)currentPageNo / pageCntPerBlock);  // 현재 페이지 블럭
+				
+				int startPageNoInBlock = (currentPageBlock -1) * pageCntPerBlock + 1;
+				int endPageNoInBlock = startPageNoInBlock + pageCntPerBlock - 1; 
+				
+				for (int i = startPageNoInBlock; i <= endPageNoInBlock; i++) {
+					if (i == currentPageNo) {
+						System.out.println("[" + i + "]");
+					} else {
+						System.out.println(i + "");
+					}
+
+				}
+
+				// 페이징 명령어 선택.
+				while (true) {
+
+					System.out.println("페이징 명령어를 입력해주세요 : ");
+					System.out.println("(prev : 이전, next : 다음, go : 선택, back : 뒤로가기)");
+
+					String targetpage = sc.nextLine();
+
+					// 명령어를 선택했을 경우.
+					if (targetpage.equals("prev")) {
+
+					} else if (targetpage.equals("next")) {
+
+					} else if (targetpage.equals("back")) {
+						break;
+					}
+
+					// go로 페이지 번호를 입력했을 경우.
+					else if (targetpage.equals("go")) {
+						System.out.println("이동하실 페이지 번호를 입력해주세요 : ");
+						int targetInt = Integer.parseInt(sc.nextLine());
+						if (targetInt == 1) {
+
+						}
+
+					}
+				}
 
 			}
 		}
@@ -266,7 +323,7 @@ public class App {
 			System.out.println("작성자 : " + regMember.getNickname());
 			System.out.println("조회수 : " + article.getHit());
 			int LikeCnt = likeDao.getLikecount(article.getId());
-			System.out.println("좋아요 : " + LikeCnt);
+			System.out.println("좋아요 : " + article.getLikeCnt());
 			System.out.println("===================");
 		}
 	}
@@ -291,12 +348,16 @@ public class App {
 		System.out.println("등록날짜 : " + target.getRegDate());
 		System.out.println("조회수 : " + target.getHit());
 		int LikeCnt = likeDao.getLikecount(target.getId());
-		System.out.println("좋아요 : " + LikeCnt);
+		System.out.println("좋아요 : " + target.getLikeCnt());
 		System.out.println("===============");
 		System.out.println("================댓글==============");
 
 		ArrayList<Reply> replies = replyDao.getRepliesByParentId(target.getId());
 		printReplies(replies);
+	}
+
+	private void printArticlePage(ArrayList<Article> articleList) {
+
 	}
 
 	private boolean isLogin() {
@@ -322,21 +383,36 @@ public class App {
 }
 
 class MyComparator implements Comparator<Article> {
-	
+
 	String sortOrder = "asc";
+	String sortType = "hit";
 
+	@Override
 	public int compare(Article o1, Article o2) {
-		if (sortOrder.equals("asc")) {
-			if (o1.getHit() > o2.getHit()) {
-				return 1;
-			}
-			return -1;
+		int c1 = 0;
+		int c2 = 0;
 
-		} else {
-			if (o1.getHit() < o2.getHit()) {
+		if (sortType.equals("hit")) {
+			c1 = o1.getHit();
+			c2 = o2.getHit();
+		} else if (sortOrder.equals("like")) {
+			c1 = o1.getLikeCnt();
+			c2 = o2.getLikeCnt();
+		}
+
+		if (sortOrder.equals("asc")) {
+			if (c1 > c2) {
 				return 1;
 			}
+
+			return -1;
+		} else {
+			if (c1 < c2) {
+				return 1;
+			}
+
 			return -1;
 		}
 	}
+
 }

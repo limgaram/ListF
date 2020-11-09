@@ -252,39 +252,61 @@ public class App {
 			}
 
 			if (cmd.equals("article page")) {
-				// article 출력.
-				ArrayList<Article> articles = articleDao.getArticles();
-				printArticles(articles);
-				//System.out.println("[1] 2 3 4 5 >>");
 
-				// 한 페이지에 3개씩 나오게 하기.
+				ArrayList<Article> articles = articleDao.getArticles();
 				
 				int currentPageNo = Integer.parseInt(sc.nextLine());
-				
-				int totalCntOfItems = 20; //전체 게시물 개수
-				int startPageNo =1; //시작 페이지 번호
+				int totalCntOfItems = articles.size(); // 전체 게시물 개수
+				int startPageNo = 1; // 시작 페이지 번호
 				int itemCntPerPage = 3; // 페이지당 출력 게시물 개수
 				int pageCntPerBlock = 5; // 한 페이지 블럭 당 페이지 개수
-				int endPageNo = (int)Math.ceil((double)totalCntOfItems / itemCntPerPage); // 마지막 페이지 번호
-				int currentPageBlock = (int)Math.ceil((double)currentPageNo / pageCntPerBlock);  // 현재 페이지 블럭
+				int endPageNo = (int) Math.ceil((double) totalCntOfItems / itemCntPerPage); // 마지막 페이지 번호
+				int currentPageBlock = (int) Math.ceil((double) currentPageNo / pageCntPerBlock); // 현재 페이지 블럭
+
+				int startPageNoInBlock = ((currentPageBlock - 1) * pageCntPerBlock) + 1;
+				int endPageNoInBlock = startPageNoInBlock + pageCntPerBlock - 1;
+
+				if (startPageNoInBlock < startPageNo) {
+					startPageNoInBlock = startPageNo;
+				}
 				
-				int startPageNoInBlock = (currentPageBlock -1) * pageCntPerBlock + 1;
-				int endPageNoInBlock = startPageNoInBlock + pageCntPerBlock - 1; 
-				
+				if (endPageNoInBlock > endPageNo) {
+					endPageNoInBlock = endPageNo;
+				}
+
+				int startIndex = (currentPageNo - 1) * itemCntPerPage;
+				int endIndex = startIndex + itemCntPerPage;
+
+				if (endIndex > totalCntOfItems) {
+					endIndex = totalCntOfItems;
+				}
+
+				// 페이지별 게시물 출력
+				for (int i = startIndex; i < endIndex; i++) {
+					System.out.println("번호 : " + articles.get(i).getId());
+					System.out.println("제목 : " + articles.get(i).getTitle());
+					System.out.println("내용 : " + articles.get(i).getBody());
+					System.out.println("등록날짜 : " + articles.get(i).getRegDate());
+					System.out.println("======================================");
+				}
+
 				for (int i = startPageNoInBlock; i <= endPageNoInBlock; i++) {
 					if (i == currentPageNo) {
-						System.out.println("[" + i + "]");
+						System.out.print("[" + i + "]");
 					} else {
-						System.out.println(i + "");
+						System.out.print(i + " ");
+			
 					}
+					
 
 				}
 
 				// 페이징 명령어 선택.
 				while (true) {
-
+					
 					System.out.println("페이징 명령어를 입력해주세요 : ");
-					System.out.println("(prev : 이전, next : 다음, go : 선택, back : 뒤로가기)");
+					System.out.println(
+							"(prev : 이전, next : 다음, prevPage : 이전페이지, nextPage : 다음페이지, count : 페이지당 게시물 수 go : 선택, back : 뒤로가기)");
 
 					String targetpage = sc.nextLine();
 
@@ -292,6 +314,12 @@ public class App {
 					if (targetpage.equals("prev")) {
 
 					} else if (targetpage.equals("next")) {
+
+					} else if (targetpage.equals("prevPage")) {
+
+					} else if (targetpage.equals("nextPage")) {
+
+					} else if (targetpage.equals("count")) {
 
 					} else if (targetpage.equals("back")) {
 						break;
@@ -301,9 +329,6 @@ public class App {
 					else if (targetpage.equals("go")) {
 						System.out.println("이동하실 페이지 번호를 입력해주세요 : ");
 						int targetInt = Integer.parseInt(sc.nextLine());
-						if (targetInt == 1) {
-
-						}
 
 					}
 				}
@@ -354,10 +379,6 @@ public class App {
 
 		ArrayList<Reply> replies = replyDao.getRepliesByParentId(target.getId());
 		printReplies(replies);
-	}
-
-	private void printArticlePage(ArrayList<Article> articleList) {
-
 	}
 
 	private boolean isLogin() {

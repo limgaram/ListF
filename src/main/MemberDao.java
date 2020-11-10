@@ -6,15 +6,15 @@ import java.util.Date;
 
 public class MemberDao {
 	private ArrayList<Member> members;
-	private int no = 1;
+	private int no = 6;
 
 	public MemberDao() {
 		members = new ArrayList<>();
-		Member m1 = new Member(1, "aaa", "aa1", "a", getCurrentDate());
-		Member m2 = new Member(2, "bbb", "bb1", "b", getCurrentDate());
-		Member m3 = new Member(3, "ccc", "cc1", "c", getCurrentDate());
-		Member m4 = new Member(4, "ddd", "dd1", "d", getCurrentDate());
-		Member m5 = new Member(5, "eee", "ee1", "e", getCurrentDate());
+		Member m1 = new Member(1, "aaa", "aa1", "a", Util.getCurrentDate());
+		Member m2 = new Member(2, "bbb", "bb1", "b", Util.getCurrentDate());
+		Member m3 = new Member(3, "ccc", "cc1", "c", Util.getCurrentDate());
+		Member m4 = new Member(4, "ddd", "dd1", "d", Util.getCurrentDate());
+		Member m5 = new Member(5, "eee", "ee1", "e", Util.getCurrentDate());
 
 		members.add(m1);
 		members.add(m2);
@@ -26,17 +26,9 @@ public class MemberDao {
 	public void insertMember(Member m) {
 		m.setId(no);
 		no++;
-		m.setRegDate(getCurrentDate());
+		m.setRegDate(Util.getCurrentDate());
 
 		members.add(m);
-	}
-
-	private static String getCurrentDate() {
-		SimpleDateFormat format1 = new SimpleDateFormat("yyyy.MM.dd");
-		Date time = new Date();
-		String time1 = format1.format(time);
-
-		return time1;
 	}
 
 	public Member getMemberById(int id) {
